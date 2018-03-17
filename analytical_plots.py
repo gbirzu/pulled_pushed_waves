@@ -265,87 +265,11 @@ def Fig2_fixation(label_size, markings_size):
     plt.tight_layout(pad=2.4, h_pad=0.5)
     plt.savefig('plots/Fig2_fixation.pdf')
 
-
-def FigS1_phase_plot():
-    font = {'family' : 'sans-serif', 'serif' : 'Helvetica Neue', 'weight' : 'bold', 'size' : 12}
-    matplotlib.rc('font', **font)
-
-    fig = plt.figure(figsize=(cm2inch(17.8), cm2inch(9)))
-    semipushed_ratio = (3./(2.*np.sqrt(2.)))
-
-    #----------------------------------------------------------------------------------#
-    predation_arr = np.load('data/predation_model.npy') 
-    predation_arr = predation_arr[predation_arr[:, 1].argsort()]
-    vF = min(predation_arr.T[1])
-    x_min = 0.
-    x_max = 0.8
-    y_min = 0.42
-    y_max = 0.6
-
-    ax = fig.add_subplot(121)
-    ax.set_title('predator satiation', fontsize=14, fontweight='bold')
-    ax.set_xlabel('predation threshold, $\mathbf{n^*/N}$', fontsize=14, fontweight='bold')
-    ax.set_ylabel('expansion velocity, $\mathbf{v}$', fontsize=14, fontweight='bold')
-    ax.text(-0.1, 0.61, 'A', fontsize=14, fontweight='bold')
-
-    ax.set_xlim(x_min, x_max)
-    ax.set_ylim(y_min, y_max)
-    ax.set_xticks([0, 0.2, 0.4, 0.6, 0.8])
-    ax.set_yticks([0.45, 0.5, 0.55])
-
-    ax.fill_between([x_min, 0.08], y_min, y_max, facecolor='lightskyblue', alpha=0.5)
-    ax.fill_between([0.08, 0.35], y_min, y_max, facecolor='lightgreen', alpha=0.5)
-    ax.fill_between([0.35, x_max], y_min, y_max, facecolor='lightsalmon', alpha=0.5)
-
-    ax.scatter(predation_arr.T[0], predation_arr.T[1], facecolor='k', edgecolor='none', s=30)
-    ax.plot([x_min, x_max], vF*np.ones(2), color='r', ls='--')
-    ax.plot([x_min, x_max], vF*semipushed_ratio*np.ones(2), color='r', ls='--', lw=2)
-    #----------------------------------------------------------------------------------#
-
-    #----------------------------------------------------------------------------------#
-    yeast_arr = np.load('data/velocity_yeast.npy')
-    vF = min(yeast_arr.T[2])
-    x_min = 5E-4
-    x_max = 2.0
-    y_min = 0.54
-    y_max = 0.6
-
-    ax = fig.add_subplot(122)
-    ax.set_xscale('log')
-    ax.set_xlim(x_min, x_max)
-    ax.set_ylim(y_min, y_max)
-
-    ax.set_title('yeast model', fontsize=14, fontweight='bold')
-    ax.set_xlabel('sucrose concentration, $\mathbf{s}$', fontsize=14, fontweight='bold')
-    ax.set_ylabel('expansion velocity, $\mathbf{v}$', fontsize=14, fontweight='bold')
-    ax.text(1.5E-4, 0.6025, 'B', fontsize=14, fontweight='bold')
-    ax.text(0.05, 0.545, 'pulled', fontsize=12, fontweight='bold', rotation=90, color='k', transform=ax.transAxes)
-    ax.text(0.0045, 0.59, 'semi-pushed', fontsize=12, fontweight='bold')
-    ax.text(0.86, 0.67, 'fully-pushed', fontsize=12, fontweight='bold', rotation=90, color='k', transform=ax.transAxes)
-
-    ax.set_xticks([0.001, 0.01, 0.1, 1.0])
-    ax.set_yticks([0.54, 0.56, 0.58])
-    ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
-
-    ax.fill_between([x_min, 0.004], y_min, y_max, facecolor='lightsalmon', alpha=0.5)
-    ax.fill_between([0.004, 0.4], y_min, y_max, facecolor='lightgreen', alpha=0.5)
-    ax.fill_between([0.4, x_max], y_min, y_max, facecolor='lightskyblue', alpha=0.5)
-
-    ax.scatter(yeast_arr.T[1], yeast_arr.T[2], facecolor='k', edgecolor='none', s=30)
-    ax.plot([x_min, x_max], vF*np.ones(2), color='r', ls='--')
-    ax.plot([x_min, x_max], vF*semipushed_ratio*np.ones(2), color='r', ls='--', lw=2)
-    #----------------------------------------------------------------------------------#
-
-    plt.tight_layout()
-    plt.savefig('plots/FigS1_phase_space.pdf')
-
-
 if __name__=='__main__':
     font = {'family' : 'sans-serif', 'serif' : 'Helvetica Neue', 'weight' : 'bold', 'size' : 8}
     matplotlib.rc('font', **font)
 
     Fig1_growth(labels_flag=1, label_size=8)
     Fig2_fixation(label_size=9, markings_size=9)
-    FigS1_phase_plot()
 
     plt.show()

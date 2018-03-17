@@ -7,6 +7,7 @@ import glob
 
 #from data_rate_analysis_tools import *
 from plotting_tools import *
+from analytical_plots import *
 from sklearn import linear_model
 
 def create_vel_avg(N, B_pulled, B_pushed):
@@ -34,7 +35,7 @@ def create_vel_avg(N, B_pulled, B_pushed):
     np.save(path+'pushed_avg', vel_pushed_avg)
 
 
-def fig3_fluctuations(n_lines):
+def Fig3_fluctuations(n_lines):
     font = {'family' : 'sans-serif', 'serif' : 'Helvetica Neue', 'weight' : 'bold', 'size' : 10}
     matplotlib.rc('font', **font)
 
@@ -294,7 +295,7 @@ def make_D_phase_plot(ax, label, axis_fontsize, title_fontsize, markings_fontsiz
     ax.text(7.0, -0.2, 'fully-\n'+'pushed', fontsize=markings_fontsize, fontweight='bold', color='k')
 
 
-def fig4_Df_summary():
+def Fig4_Df_summary():
     font = {'family' : 'sans-serif', 'serif' : 'Helvetica Neue', 'weight' : 'bold', 'size' : 8}
     matplotlib.rc('font', **font)
 
@@ -468,7 +469,7 @@ def make_Lambda_phase_plot(ax, label, axis_fontsize, title_fontsize, markings_fo
     ax.text(2.5, -0.2, 'semi-\n'+'pushed', fontsize=markings_fontsize, fontweight='bold', color='k')
     ax.text(7.0, -0.2, 'fully-\n'+'pushed', fontsize=markings_fontsize, fontweight='bold', color='k')
     
-def fig5_Lambda_summary(het_data, neff_data):
+def Fig5_Lambda_summary(het_data, neff_data):
     font = {'family' : 'sans-serif', 'serif' : 'Helvetica Neue', 'weight' : 'bold', 'size' : 6}
     matplotlib.rc('font', **font)
 
@@ -483,7 +484,7 @@ def fig5_Lambda_summary(het_data, neff_data):
     plt.subplots_adjust(top=0.9)
     plt.savefig('plots/Fig5_diversity.pdf')
 
-def fig6_collapse():
+def Fig6_collapse():
     font = {'family' : 'sans-serif', 'serif' : 'Helvetica Neue', 'weight' : 'bold', 'size' : 12}
     matplotlib.rc('font', **font)
 
@@ -579,9 +580,12 @@ if __name__=='__main__':
     het_data = np.load('data/hetero_plot_data.npy')
     D_array = np.load('data/D_array.npy')
 
-    fig3_fluctuations(50)
-    fig4_Df_summary()
-    fig5_Lambda_summary(het_data, lambda_comparison_arr)
-    fig6_collapse()
+
+    Fig1_growth(labels_flag=1, label_size=8)
+    Fig2_fixation(label_size=9, markings_size=9)
+    Fig3_fluctuations(50)
+    Fig4_Df_summary()
+    Fig5_Lambda_summary(het_data, lambda_comparison_arr)
+    Fig6_collapse()
 
     plt.show()
