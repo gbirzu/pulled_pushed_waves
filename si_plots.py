@@ -6,7 +6,8 @@ import os
 import glob
 import math
 
-from data_rate_analysis_tools import *
+#from data_rate_analysis_tools import *
+from data_analysis_tools import *
 from analytical_plots import *
 from sklearn import linear_model
 
@@ -82,14 +83,6 @@ def FigS1_other_models():
 
     plt.tight_layout()
     plt.savefig('plots/FigS1_other_models.pdf')
-
-
-def profile_decay(r, migr, B):
-    if B <= 2.0:
-        lm = np.sqrt(2.*r/migr)
-    else:
-        lm = np.sqrt(r*B/migr)
-    return lm
 
 def metastable_diversity_loss(label, axis_fontsize, output_path):
     font = {'family' : 'sans-serif', 'serif' : 'Helvetica Neue', 'weight' : 'bold', 'size' : 9}
@@ -255,7 +248,7 @@ def FigS3_three_classes(neff_data, label, axis_fontsize):
     ax.legend(loc='lower left', prop=legend_properties, scatterpoints=1)
 
     plt.tight_layout(pad=2)
-    plt.savefig('scalings_si.eps')
+    plt.savefig('plots/FigS3_scalings.pdf')
 
 
 def theory_metastable(all_data, axis_size, output_path):
@@ -311,67 +304,6 @@ def theory_metastable(all_data, axis_size, output_path):
             
     plt.tight_layout(pad=1.2)
     plt.savefig(output_path+'/Lambda_theory_comparison.pdf')
-
-
-def phase_diagram_si(gamma_list_r, D_array):
-    font = {'family' : 'sans-serif', 'serif' : 'Helvetica Neue', 'weight' : 'bold', 'size' : 14}
-    matplotlib.rc('font', **font)
-
-    x_min = -1.33
-    x_max = 0.35
-    y_min = -1.05
-    y_max = 0.
-    y_arr = np.arange(-1.0, 0., 0.001)
-    x_weak = -0.25*np.ones(len(y_arr))
-    x_pulled_2 = -0.5*np.ones(len(y_arr))
-    x_metastable = np.zeros(len(y_arr))
-
-    #For plotting horizontal lines
-    x_full = np.arange(x_min, x_max, 0.001)
-    x_pushed = np.arange(-0.5, x_max, 0.001)
-    x_pulled = np.arange(x_min, -0.5, 0.001)
-    x_sublinear = np.arange(x_min, -0.25, 0.001)
-    x_linear = np.arange(-0.25, x_max, 0.001)
-
-    x_weak_pushed = np.arange(-0.5, 0.0, 0.001)
-    x_strong_pushed = np.arange(0.0, 0.3, 0.001)
-    ones_full = -np.ones(len(x_full))#horizontal line
-
-    fig = plt.figure(figsize=(cm2inch(17.8), cm2inch(11.4)), dpi=100)
-    ax = fig.add_subplot(111)
-    ax.set_xlabel('Allee threshold, $\mathbf{\\rho^*}$', fontsize=14, fontweight='bold')
-    ax.set_ylabel('exponents, $\mathbf{\\alpha_H}$, $\mathbf{\\alpha_D}$', fontsize=14, fontweight='bold')
-
-    ax.set_xlim([x_min, x_max])
-    ax.set_ylim([y_min, y_max])
-    ax.set_xticks([-1.0, -0.75, -0.5, -0.25, 0.0, 0.25])
-    ax.set_yticks([0.0, -0.25, -0.5, -0.75, -1.0])
-    ax.set_xticklabels(['-1.0', '-0.75', '-0.5', '-0.25', '0.0', '0.25'])
-    ax.set_yticklabels(['0', '-0.25', '-0.5', '-0.75', '-1'])
-
-
-    #Plot extras
-    ax.fill_between(x_pulled, y_min, y_max, facecolor='lightsalmon', alpha=0.5)
-    ax.fill_between(x_pushed, y_min, y_max, facecolor='lightskyblue', alpha=0.5)
-    ax.plot(x_full, ones_full, '--', c='k', lw=2)
-    ax.plot([0.0, 0.0], [y_min, y_max], '--', c='k', lw=2)
-    ax.plot([-1.0, -1.0], [y_min, y_max], '--', c='k', lw=2)
-
-    ax.scatter(gamma_list_r.T[0], gamma_list_r.T[1], s=100, facecolor='none', edgecolor='k', marker='^', lw=3)
-    ax.scatter(D_array.T[0], D_array.T[1], s=100, facecolor='k', edgecolor='none', marker='x', lw=3)
-
-    ax.text(-0.90, 0.04, 'pulled', fontsize='16', fontweight='bold', color='lightsalmon')
-    ax.text(-0.25, 0.04, 'pushed', fontsize='16', fontweight='bold', color='lightskyblue')
-    ax.text(-0.40, -0.2, 'semi-\n'+'pushed', fontsize='12', fontweight='bold', color='k')
-    ax.text(0.02, -0.2, 'fully-\n'+'pushed', fontsize='12', fontweight='bold', color='k')
-    ax.text(0.03, -0.55, 'metastable state\n'+'strong Allee effect', fontsize='10', fontweight='bold', color='w', rotation=90)
-    ax.text(-0.10, -0.58, 'unstable state\n'+'weak Allee effect', fontsize='10', fontweight='bold', color='w', rotation=90)
-    ax.text(-0.97, -0.62, 'unstable state\n'+'weak Allee effect', fontsize='10', fontweight='bold', color='w', rotation=90)
-    ax.text(-1.12, -0.40, 'unstable state, Fisher-like\n'+'no Allee effect', fontsize='10', fontweight='bold', color='w', rotation=90)
-
-
-    plt.tight_layout(pad=1.2)
-    plt.savefig('phasediagram_si_v1.pdf')
 
 
 def FigS5_metastable(gamma_list_r, D_array):
@@ -459,7 +391,7 @@ def FigS5_metastable(gamma_list_r, D_array):
 
 
     plt.tight_layout(pad=1.2)
-    plt.savefig('phasediagram_si_v2.pdf')
+    plt.savefig('plots/FigS5_phasediagram.pdf')
 
 def fit_heterozygosity(x_het, het, surv):
     X_INIT = min(min(range(len(het)), key=lambda i:abs(het[i] - 0.1)), 1000) #find initial fitting point
@@ -640,7 +572,7 @@ def fig4_Lambda_summary(het_data, neff_data, gamma_list):
     make_Lambda_phase_plot(ax, gamma_list, 'C', 8, 8, 6)
     plt.tight_layout(pad=3.0)
     plt.subplots_adjust(top=0.9)
-    plt.savefig('det_diversity_si.pdf')
+    plt.savefig('plots/FigS7_det_diversity.pdf')
 
 def FigS7_no_demographic_noise():
     het_det_data = np.load('data/hetero_plot_det_data.npy')
@@ -807,7 +739,7 @@ def FigS6_velocity_corrections():
     make_vel_phase_plot(ax, 'C', 9, 8, 9)
     plt.tight_layout()
     plt.subplots_adjust(top=0.9)
-    plt.savefig('velocity_full_si.pdf')
+    plt.savefig('plots/FigS6_velocity_full.pdf')
 
 def Df_theory(r, m, B, N):
     D = m/2.
@@ -913,7 +845,7 @@ def FigS4_metastable_theory(title_size, axis_size):
     ax.legend(loc='best', prop=legend_properties, scatterpoints=1)
 
     plt.tight_layout(pad=1.2, h_pad=2.0, w_pad=1.5)
-    plt.savefig('theory_metastable.pdf')
+    plt.savefig('plots/FigS4_theory_metastable.pdf')
 
 def det_metastable(a):
     return 2*np.sqrt(a**2 + 4*(1. - a))/(a + np.sqrt(a**2 + 4*(1. - a)))
@@ -985,7 +917,7 @@ def FigS9_theory_comparison(dx):
 
     ax.legend(loc='upper right', fontsize=12)
     plt.tight_layout(pad=3.0)
-    plt.savefig('comparison_si.pdf')
+    plt.savefig('plots/FigS9_comparison.pdf')
 
 
 if __name__=='__main__':
@@ -1001,6 +933,7 @@ if __name__=='__main__':
     lambda_comparison_arr = np.load('data/neff_comparison_data_si.npy')
 
     FigS1_other_models()
+    FigS2_ancestry()
     FigS3_three_classes(lambda_comparison_arr, '', 12)
     FigS4_metastable_theory(14, 12)
     FigS5_metastable(gamma_list_r_allee, D_array_allee)
