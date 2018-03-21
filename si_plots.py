@@ -513,7 +513,7 @@ def FigS4_metastable_theory():
     Lm_arr = Lm_B7.T[1]
     N_fit = np.array([0.2*min(N_arr), 5*max(N_arr)])
     ax.scatter(N_arr, Lm_arr, s=50, facecolor='none', edgecolor='k', lw=2, label='simulations')
-    ax.plot(N_fit, Lambda_theory(7.0, N_fit), lw=2, ls='-', label='exact prediction')
+    ax.plot(N_fit, Lambda_theory_cooperative(7.0, N_fit), lw=2, ls='-', label='exact prediction')
     legend_properties={'weight':'normal', 'size':10}
     ax.legend(loc='best', prop=legend_properties, scatterpoints=1)
 
@@ -532,7 +532,7 @@ def FigS4_metastable_theory():
     Lm_arr = Lm_B10.T[1]
     N_fit = np.array([0.2*min(N_arr), 5*max(N_arr)])
     ax.scatter(N_arr, Lm_arr, s=50, facecolor='none', edgecolor='k', lw=2, label='simulations')
-    ax.plot(N_fit, Lambda_theory(10.0, N_fit), lw=2, ls='-', label='exact prediction')
+    ax.plot(N_fit, Lambda_theory_cooperative(10.0, N_fit), lw=2, ls='-', label='exact prediction')
     legend_properties={'weight':'normal', 'size':10}
     ax.legend(loc='best', prop=legend_properties, scatterpoints=1)
 
@@ -667,9 +667,47 @@ def FigS7_no_demographic_noise():
     plt.savefig('plots/FigS7_det_diversity.pdf')
 
 
-def FigS9_theory_comparison(dx):
+def FigS8_deterministic_comparison():
+    font = {'family' : 'sans-serif', 'serif' : 'Helvetica Neue', 'weight' : 'bold', 'size' : 14}
+    matplotlib.rc('font', **font)
+
+
+    fig = plt.figure(figsize=(cm2inch(18.4), cm2inch(18.4)))
+    ax = fig.add_subplot(111)
+    ax.set_xscale('log')
+    ax.set_yscale('log')
+    ax.set_xlabel('population size, N', fontweight='bold')
+    ax.set_ylabel('rate of diversity loss, $\mathbf{\Lambda}$', fontweight='bold')
+
+    fstr = -0.3
+    (N_det, Lambda_det) = np.load('data/deterministic_comparison_detdata.npy')
+    N_fit = np.array([0.2*min(N_det), 5*max(N_det)])
+    coeffs, res = linear_reg(np.log(N_det), np.log(Lambda_det))
+    fit = np.poly1d(coeffs)
+    alpha_f = fluctuations_exponent(fstr)[-1]
+    det_est = (Lambda_det[0]/N_det[0]**alpha_f)*(N_fit**alpha_f)
+
+    (N_stoch, Lambda_stoch) = np.load('data/deterministic_comparison_stochdata.npy')
+    coeffs, res = linear_reg(np.log(N_stoch), np.log(Lambda_stoch))
+    fit = np.poly1d(coeffs)
+    alpha_mf = meanfield_exponent(fstr)[-1]
+    stoch_est = (Lambda_stoch[0]/N_stoch[0]**alpha_mf)*(N_fit**alpha_mf)
+
+    ax.scatter(N_det, Lambda_det, s=100, lw=2, marker='D', edgecolor='darkolivegreen', facecolor='none', label='deterministic-front model, $\mathbf{\gamma_\mathrm{n} = 0}$')
+    ax.plot(N_fit, det_est, lw=2, c='darkolivegreen', label='deterministic-front theory, $\mathbf{\zeta_c = \\frac{1}{q}\ln{N}}$')
+    ax.scatter(N_stoch, Lambda_stoch, s=100, lw=2, marker='o', edgecolor='lawngreen', facecolor='none', label='fluctuating-front model, $\mathbf{\gamma_\mathrm{n} = 0}$')
+    ax.plot(N_fit, stoch_est, lw=2, c='lawngreen', label='fluctuating-front theory, $\mathbf{\zeta_c = \\frac{1}{k}\ln{N}}$')
+
+    ax.legend(loc='upper right', scatterpoints=1, fontsize=12)
+    plt.tight_layout()
+    plt.savefig('plots/FigS8_deterministic_comparison.pdf')
+
+
+def FigS9_theory_comparison():
     font = {'family' : 'sans-serif', 'serif' : 'Helvetica Neue', 'weight' : 'bold', 'size' : 12}
     matplotlib.rc('font', **font)
+
+    dx = 0.001
 
     fig = plt.figure(figsize=(12,5.5))
 
@@ -739,11 +777,6 @@ if __name__=='__main__':
     font = {'family' : 'sans-serif', 'serif' : 'Helvetica Neue', 'weight' : 'bold', 'size' : 12}
     matplotlib.rc('font', **font)
 
-    gamma_list_r = np.load('data/gamma_list_r.npy')
-    gamma_list_v = np.load('data/gamma_list_v.npy')
-    het_data = np.load('data/hetero_plot_data.npy')
-    D_array = np.load('data/D_array.npy')
-
     FigS1_other_models()
     FigS2_ancestry()
     FigS3_three_classes()
@@ -751,6 +784,7 @@ if __name__=='__main__':
     FigS5_metastable()
     FigS6_velocity_corrections()
     FigS7_no_demographic_noise()
-    FigS9_theory_comparison(0.001)
+    FigS8_deterministic_comparison()
+    FigS9_theory_comparison()
 
     plt.show()

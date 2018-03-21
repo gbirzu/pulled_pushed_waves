@@ -79,8 +79,38 @@ def ancestral_probability(gf, migr, fstr, x_min, x_max, dx, x):
     prob = c**3*np.exp(2*v*x/D)/(const**2)
     return prob
 
-def Lambda_theory(B, N):
+def meanfield_cutoff(gf, migr, fstr, N):
+    D = migr/2.
+    if fstr > -0.5:
+        k = np.sqrt(gf/(2.*D))
+    else:
+        k = np.sqrt(gf*abs(fstr)/D)
+    return np.log(N)/k
+
+def fluctuations_cutoff(gf, migr, fstr, N):
+    D = migr/2.
+    if fstr > -0.5:
+        q = -2.*fstr*np.sqrt(gf/(2.*D))
+    else:
+        q = np.sqrt(gf*abs(fstr)/D)
+    return np.log(N)/q
+
+def Lambda_theory_cooperative(B, N):
     return np.sqrt(0.01*B/0.25)*4*np.pi*np.tan(2*np.pi/B)/(B+4)/N
+
+def Lambda_theory_Allee(fstr, N, x_min, x_max, dx):
+    gf = 0.01
+    migr = 0.25
+    x_arr = np.arange(x_min, x_max, dx)
+    c_arr = profile(gf, migr, fstr, x_arr)
+    v = velocity(gf, migr, fstr)
+    D = migr/2.
+
+    const = fixation_const(gf, migr, fstr, x_min, x_max, dx)
+    function = c_arr**3*np.exp(2*v*x_arr/D)/(const**2)
+
+    Lambda = (1./N)*integrate.simps(function, x_arr)
+    return Lambda
 
 def Df_theory(r, m, B, N):
     D = m/2.
@@ -94,6 +124,18 @@ def Df_theory(r, m, B, N):
 
 def det_metastable(a):
     return 2*np.sqrt(a**2 + 4*(1. - a))/(a + np.sqrt(a**2 + 4*(1. - a)))
+
+def meanfield_exponent(f):
+    v = velocity(0.01, 0.25, f)
+    vF = velocity_Fisher(0.01, 0.25, f)
+    v_arr = v/vF
+    return v_arr, -2 - 4*f
+
+def fluctuations_exponent(f):
+    v = velocity(0.01, 0.25, f)
+    vF = velocity_Fisher(0.01, 0.25, f)
+    v_arr = v/vF
+    return v_arr, (1 + 2*f)/(2.*f)
 
 def Fig1_growth(labels_flag, label_size):
     font = {'family' : 'sans-serif', 'serif' : 'Helvetica Neue', 'weight' : 'bold', 'size' : 8}
