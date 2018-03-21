@@ -79,6 +79,22 @@ def ancestral_probability(gf, migr, fstr, x_min, x_max, dx, x):
     prob = c**3*np.exp(2*v*x/D)/(const**2)
     return prob
 
+def Lambda_theory(B, N):
+    return np.sqrt(0.01*B/0.25)*4*np.pi*np.tan(2*np.pi/B)/(B+4)/N
+
+def Df_theory(r, m, B, N):
+    D = m/2.
+    x = 2./B
+    lm = profile_decay(r, 2*D, B)
+
+    const = 3/(20*np.pi*N*lm)
+    trig = np.tan(2*np.pi/B)
+    algebr = (B*(B+4.)*(3*B+4.))/((B+1.)*(B+2.))
+    return const*trig*algebr
+
+def det_metastable(a):
+    return 2*np.sqrt(a**2 + 4*(1. - a))/(a + np.sqrt(a**2 + 4*(1. - a)))
+
 def Fig1_growth(labels_flag, label_size):
     font = {'family' : 'sans-serif', 'serif' : 'Helvetica Neue', 'weight' : 'bold', 'size' : 8}
     matplotlib.rc('font', **font)
